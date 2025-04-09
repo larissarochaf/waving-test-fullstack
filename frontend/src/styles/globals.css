@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f1a48;
+  --foreground: #ffffff;
+  --cta: #7f4de5;
+  --cta-hover: #6938d9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.button-primary {
+  background-color: var(--cta);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+}
+
+.button-primary:hover {
+  background-color: var(--cta-hover);
+}

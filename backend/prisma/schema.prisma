@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  CANCELED
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String?
+  items     CartItem[]
+  orders    Order[]    @relation("CartOrders")
+  createdAt DateTime   @default(now())
+}
+
+model Product {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  imageUrl    String
+  category    String     @default("general")
+  createdAt   DateTime   @default(now())
+  cartItems   CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  cartId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  userId    String?
+  cartId    String?
+  cart      Cart?    @relation("CartOrders", fields: [cartId], references: [id])
+  total     Float
+  status    String
+  createdAt DateTime @default(now())
+}
