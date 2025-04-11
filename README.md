@@ -53,7 +53,6 @@ A interface foi desenvolvida com foco em performance e experiência do usuário.
   - `/cart`: carrinho de compras
   - `/checkout`: finalização de pedido
   - `/admin`: login de administrador
-  - `/admin/products`: gerenciamento de produtos
   - `/admin/orders`: visualização de pedidos
 
 - Gerenciamento do carrinho com **React Context**, persistindo no localStorage
