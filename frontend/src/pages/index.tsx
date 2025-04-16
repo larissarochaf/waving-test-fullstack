@@ -39,7 +39,6 @@ export default function LoginPage() {
 
       const data = await response.json();
 
-      // Aqui você pode guardar o user de forma simples
       const userData = JSON.stringify({ email: data.email, id: data.id });
 
       if (remember) {

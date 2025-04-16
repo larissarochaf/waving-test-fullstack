@@ -38,35 +38,44 @@ export class OrdersController {
   }
 
   @Post()
-  async createOrder(
-    @Body()
-    body: {
-      items: { productId: string; quantity: number }[];
-      total: number;
-      userId: string;
-    }
-  ) {
-    const cart = await this.prisma.cart.create({
-      data: {
-        userId: body.userId,
-        items: {
-          create: body.items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-          })),
-        },
-      },
-    });
-
-    const order = await this.prisma.order.create({
-      data: {
-        cartId: cart.id,
-        userId: body.userId,
-        total: body.total,
-        status: 'PENDING',
-      },
-    });
-
-    return { success: true, orderId: order.id };
+async createOrder(
+  @Body()
+  body: {
+    items: { productId: string; quantity: number }[];
+    total: number;
+    userEmail: string;
   }
+) {
+  const user = await this.prisma.user.findUnique({
+    where: { email: body.userEmail },
+  });
+
+  if (!user) {
+    throw new Error('Usuário não encontrado');
+  }
+
+  const cart = await this.prisma.cart.create({
+    data: {
+      userId: user.id,
+      items: {
+        create: body.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+      },
+    },
+  });
+
+  const order = await this.prisma.order.create({
+    data: {
+      cartId: cart.id,
+      userId: user.id,
+      total: body.total,
+      status: 'PENDING',
+    },
+  });
+
+  return { success: true, orderId: order.id };
+}
+
 }

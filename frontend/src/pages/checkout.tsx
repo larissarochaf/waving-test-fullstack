@@ -12,6 +12,8 @@ export default function CheckoutPage() {
 
   const handleConfirm = async () => {
     try {
+      const storedEmail = localStorage.getItem('rememberedEmail');
+  
       const response = await fetch('http://localhost:3001/orders', {
         method: 'POST',
         headers: {
@@ -23,13 +25,14 @@ export default function CheckoutPage() {
             quantity: item.quantity,
           })),
           total,
+          userEmail: storedEmail, 
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Erro ao criar pedido');
       }
-
+  
       toast.success('Pedido confirmado com sucesso! 🎉');
       clearCart();
       router.push('/');
