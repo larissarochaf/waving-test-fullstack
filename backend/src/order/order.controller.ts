@@ -43,10 +43,12 @@ export class OrdersController {
     body: {
       items: { productId: string; quantity: number }[];
       total: number;
+      userId: string;
     }
   ) {
     const cart = await this.prisma.cart.create({
       data: {
+        userId: body.userId,
         items: {
           create: body.items.map((item) => ({
             productId: item.productId,
@@ -59,6 +61,7 @@ export class OrdersController {
     const order = await this.prisma.order.create({
       data: {
         cartId: cart.id,
+        userId: body.userId,
         total: body.total,
         status: 'PENDING',
       },
