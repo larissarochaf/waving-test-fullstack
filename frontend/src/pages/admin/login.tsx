@@ -20,15 +20,28 @@ export default function AdminLoginPage() {
     }
   }, []);
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+    setError(''); 
 
-    if (email === 'admin@teste.com' && password === 'admin123') {
-      const adminData = JSON.stringify({ email });
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Credenciais inválidas');
+      }
+
+      const data = await response.json();
+
+      const adminData = JSON.stringify({ email: data.email });
 
       if (remember) {
         localStorage.setItem('admin-auth', adminData);
-        localStorage.setItem('rememberedAdminEmail', email);
+        localStorage.setItem('rememberedAdminEmail', data.email);
       } else {
         sessionStorage.setItem('admin-auth', adminData);
         localStorage.removeItem('rememberedAdminEmail');
@@ -36,8 +49,8 @@ export default function AdminLoginPage() {
 
       toast.success('Login administrativo realizado com sucesso! 🔐');
       router.push('/admin/dashboard');
-    } else {
-      setError('E-mail ou senha inválidos');
+    } catch (err) {
+      setError((err as Error).message || 'Erro no login');
     }
   }
 

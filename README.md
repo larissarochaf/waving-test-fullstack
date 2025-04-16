@@ -1,103 +1,88 @@
 
 # 🛒 Waving Test – Projeto Técnico Fullstack
 
-Aplicação fullstack de e-commerce desenvolvida como parte do processo seletivo da empresa **Waving Test**. O projeto contempla tanto a experiência do usuário final quanto um painel administrativo exclusivo para administradores, com foco em boas práticas, UX moderna e código organizado.
+Aplicação fullstack de e-commerce desenvolvida como parte do processo seletivo da **Waving Test**.  
+O projeto contempla tanto a experiência do usuário final quanto um painel administrativo para gestão de produtos e pedidos, com foco em boas práticas, UX moderna e código organizado.
 
 ---
 
 ## ✨ Funcionalidades
 
 ### 🛍️ Área do usuário
-- Visualização de lista de produtos
+- Visualização de produtos
 - Página de detalhes do produto
 - Adição de itens ao carrinho com feedback visual (toast)
-- Finalização de pedido
-- Redirecionamento automático para confirmação
+- Finalização de pedido com redirecionamento automático
 
 ### 🛠️ Área administrativa
 - Login com autenticação de administrador
 - CRUD completo de produtos
-- Visualização de pedidos realizados por usuários
+- Visualização de pedidos realizados
 
 ---
 
 ## 🧠 Tecnologias utilizadas
 
 ### Frontend
-- [Next.js](https://nextjs.org/)
-- [React Query](https://tanstack.com/query/latest)
-- [TailwindCSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-- React Context API (gerenciamento de estado do carrinho)
+- Next.js
+- React Query
+- TailwindCSS
+- shadcn/ui
+- TypeScript
+- React Context API (carrinho)
 
 ### Backend
-- [NestJS](https://nestjs.com/)
-- [Prisma ORM](https://www.prisma.io/)
-- [SQLite](https://www.sqlite.org/)
-- [TypeScript](https://www.typescriptlang.org/)
+- NestJS
+- Prisma ORM
+- SQLite
+- TypeScript
 
 ---
 
-## 🔍 Detalhes técnicos
+## 🔧 Arquitetura e principais decisões
 
-### 📱 Frontend – Next.js + TailwindCSS
+### 📱 Frontend
 
-A interface foi desenvolvida com foco em performance e experiência do usuário. Utilizando Next.js com rotas baseadas em arquivos (`pages/`), React Query para controle de estado assíncrono e TailwindCSS com shadcn/ui para estilização rápida e moderna.
+Construído com **Next.js**, focando em performance e experiência do usuário.  
+Utiliza React Query para estado assíncrono e TailwindCSS + shadcn/ui para estilização ágil e responsiva.
 
-**Principais pontos:**
+- Estrutura baseada em `pages/`:
+  - `/` – lista de produtos
+  - `/product/[id]` – detalhes do produto
+  - `/cart` – carrinho
+  - `/checkout` – finalização de pedido
+  - `/admin` – login de administrador
+  - `/admin/orders` – pedidos realizados
 
-- Estrutura baseada em `pages/` com rotas para:
-  - `/`: lista de produtos
-  - `/product/[id]`: página de detalhes
-  - `/cart`: carrinho de compras
-  - `/checkout`: finalização de pedido
-  - `/admin`: login de administrador
-  - `/admin/orders`: visualização de pedidos
+- Gerenciamento de carrinho com Context API (persistido no localStorage)
+- Navegação com redirecionamento automático após ações (ex: login, compra)
+- Componentes reutilizáveis e modularizados
 
-- Gerenciamento do carrinho com **React Context**, persistindo no localStorage
-- Toasts estilizados com `@/components/ui/use-toast`
-- Redirecionamentos automáticos após ações (ex: finalizar pedido, login)
-- Layout modular e reutilização de componentes (`ProductCard`, `CartItem`, etc.)
+### 🔧 Backend
 
----
+Desenvolvido com NestJS e Prisma ORM, organizado por módulos com responsabilidades claras.
 
-### 🔧 Backend – NestJS + Prisma
-
-A API foi construída com NestJS utilizando estrutura modular, garantindo escalabilidade e organização. A persistência de dados é feita com Prisma e banco SQLite para facilitar a execução local.
-
-**Principais módulos e responsabilidades:**
-
-- `products/`: CRUD de produtos (usado na área pública e no painel admin)
-- `cart/`: módulo de estruturação de itens do carrinho (auxiliar)
+- `products/`: CRUD de produtos (público e admin)
+- `cart/`: estrutura e persistência dos itens do carrinho
 - `order/`: criação e listagem de pedidos
-- `auth/`: autenticação de administrador com validação básica (token em memória)
-- `prisma/`: camada de acesso ao banco e migrações
+- `auth/`: autenticação de administrador e usuário cliente
+- `prisma/`: conexão e acesso ao banco SQLite
 
-**Outros pontos:**
-
-- Banco de dados: SQLite
-- Migrations versionadas com `Prisma Migrate`
-- Tipagem automática gerada a partir do schema Prisma
-- Validações com `class-validator`
-- Organização por DTOs, serviços e controladores
-- `ValidationPipe` aplicado no `main.ts` para garantir que os dados enviados aos endpoints estejam em conformidade com os DTOs, aumentando a robustez e segurança da API
-- A documentação da API via Swagger não foi incluída devido a um conflito de versão entre `@nestjs/swagger` e o NestJS v10. Como a prioridade foi a entrega funcional e integrada da aplicação, essa funcionalidade poderá ser implementada posteriormente, se houver interesse
-
-- Banco de dados: SQLite
-- Migrations versionadas com `Prisma Migrate`
-- Tipagem automática gerada a partir do schema Prisma
-- Validações com `class-validator`
-- Organização por DTOs, serviços e controladores
+**Destaques:**
+- Migrations com `Prisma Migrate`
+- Tipagem automática gerada via Prisma
+- DTOs, services e controllers organizados
+- `ValidationPipe` global para segurança e validação
+- API sem Swagger (por conflito com versão do NestJS 10), mas com estrutura pronta para futura implementação
 
 ---
 
 ## 🔐 Autenticação
 
-- A área administrativa requer login com autenticação básica.
-- O formulário de login possui validação de e-mail e senha, impedindo envio com campos inválidos.
-- Existe um **checkbox “Lembrar acesso”** que persiste a autenticação no localStorage enquanto o usuário desejar.
-- Após login bem-sucedido, o usuário é redirecionado automaticamente para o painel administrativo.
+- Área administrativa com login protegido
+- Validação de formulário (e-mail e senha)
+- Opção “Lembrar acesso” (persistência no localStorage)
+- Após login, redirecionamento automático para o painel admin
 
 ---
 
@@ -106,20 +91,22 @@ A API foi construída com NestJS utilizando estrutura modular, garantindo escala
 ### 👤 Usuário comum
 
 ```
-E-mail: admin@teste.com
+E-mail: cliente@teste.com  
 Senha: 123456
 ```
 
-> Pode ser utilizado para navegar pela área pública do site e realizar pedidos.
+> Pode ser usado para navegar, visualizar produtos e realizar pedidos.
 
 ### 👩‍💼 Administrador
 
 ```
-E-mail: admin@teste.com
+E-mail: admin@teste.com  
 Senha: admin123
 ```
 
-> Com essas credenciais, é possível acessar a área administrativa para visualizar pedidos realizados.
+> Permite acesso à área administrativa para gerenciar produtos e visualizar pedidos.
+
+> 💡 Os e-mails são distintos para evitar conflitos de autenticação e facilitar a separação dos fluxos de acesso.
 
 ---
 
@@ -127,7 +114,7 @@ Senha: admin123
 
 ### Pré-requisitos
 - Node.js instalado
-- Yarn ou npm instalados
+- Yarn ou npm
 
 ### 1. Clone o repositório
 
@@ -140,13 +127,13 @@ cd waving-case
 
 ```bash
 cd backend
-cp .env.example .env   # Crie seu .env baseado no exemplo
+cp .env.example .env
 npm install
 npx prisma migrate dev
 npm run start:dev
 ```
 
-> O projeto utiliza SQLite, então não é necessário configurar um banco externo.
+> O projeto usa SQLite — não é necessário configurar banco de dados externo.
 
 ### 3. Rodando o frontend
 
@@ -163,7 +150,7 @@ npm run dev
 ```
 waving-case/
 ├── backend/    # API NestJS com Prisma e SQLite
-└── frontend/   # Interface em Next.js com TailwindCSS e React Query
+└── frontend/   # Interface Next.js com TailwindCSS e React Query
 ```
 
 ---

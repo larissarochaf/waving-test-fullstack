@@ -12,7 +12,6 @@ export default function LoginPage() {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
 
-  // email salvo
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) {
@@ -21,21 +20,45 @@ export default function LoginPage() {
     }
   }, []);
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
 
-    if (email === 'admin@teste.com' && password === '123456') {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('E-mail ou senha inválidos');
+      }
+
+      const data = await response.json();
+
+      // Aqui você pode guardar o user de forma simples
+      const userData = JSON.stringify({ email: data.email, id: data.id });
+
       if (remember) {
-        localStorage.setItem('rememberedEmail', email);
+        localStorage.setItem('rememberedEmail', data.email);
+        localStorage.setItem('user-auth', userData);
       } else {
+        sessionStorage.setItem('user-auth', userData);
         localStorage.removeItem('rememberedEmail');
       }
 
       toast.success('Login realizado com sucesso! 🚀');
       router.push('/products');
-    } else {
-      setError('E-mail ou senha inválidos');
-    }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Erro ao fazer login');
+      }
+    }    
   }
 
   return (
